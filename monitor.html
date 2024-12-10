@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBASURA - Monitor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            padding-left: 250px;
+        }
+
+        .monitor-container {
+            padding: 30px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .machine-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .machine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .machine-title {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .operational {
+            background: #e6f4ea;
+            color: #1e8e3e;
+        }
+
+        .maintenance {
+            background: #fce8e6;
+            color: #d93025;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: #1a73e8;
+            border-radius: 5px;
+        }
+
+        .stats-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .stats-header {
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .student-table th {
+            background: #f8f9fa;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .student-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 250px;
+            background: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding: 20px 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo-container h2 {
+            color: #1a73e8;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            color: #1a73e8;
+        }
+
+        .nav-item.active {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border-left: 3px solid #1a73e8;
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-container">
+            <h2>eBASURA</h2>
+        </div>
+        <nav>
+            <a href="eBASURA-dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="reward.html" class="nav-item">
+                <i class="fas fa-gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="report.html" class="nav-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="monitor.html" class="nav-item active">
+                <i class="fas fa-desktop"></i>
+                <span>Monitor</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="monitor-container">
+        <div class="header">
+            <h1>System Monitoring Dashboard</h1>
+        </div>
+
+        <div class="grid-container">
+            <!-- Machine 1 -->
+            <div class="machine-card">
+                <div class="machine-header">
+                    <span class="machine-title">Machine #1 - Main Building</span>
+                    <span class="status operational">Operational</span>
+                </div>
+                <p>Current Capacity: 75%</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 75%"></div>
+                </div>
+                <p>Total Waste Collected: 250kg</p>
+                <p>Next Collection: Tomorrow</p>
+            </div>
+
+            <!-- Machine 2 -->
+            <div class="machine-card">
+                <div class="machine-header">
+                    <span class="machine-title">Machine #2 - Cafeteria</span>
+                    <span class="status maintenance">Maintenance</span>
+                </div>
+                <p>Current Capacity: 90%</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 90%"></div>
+                </div>
+                <p>Total Waste Collected: 180kg</p>
+                <p>Next Collection: Urgent</p>
+            </div>
+
+            <!-- Machine 3 -->
+            <div class="machine-card">
+                <div class="machine-header">
+                    <span class="machine-title">Machine #3 - Library</span>
+                    <span class="status operational">Operational</span>
+                </div>
+                <p>Current Capacity: 45%</p>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 45%"></div>
+                </div>
+                <p>Total Waste Collected: 120kg</p>
+                <p>Next Collection: In 3 days</p>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <h2 class="stats-header">Student Participation Statistics</h2>
+            <div style="margin-bottom: 20px;">
+                <p>Total Active Users: 1,250</p>
+                <p>Average Daily Participation: 65%</p>
+                <p>Total Points Earned Today: 2,500</p>
+            </div>
+
+            <h3>Top Performing Students</h3>
+            <table class="student-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Student Name</th>
+                        <th>Points Earned</th>
+                        <th>Participation Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>John Doe</td>
+                        <td>1,250</td>
+                        <td>95%</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Jane Smith</td>
+                        <td>1,100</td>
+                        <td>92%</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Mike Johnson</td>
+                        <td>950</td>
+                        <td>88%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

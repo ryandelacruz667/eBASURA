@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBASURA Reports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .reports-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .report-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .report-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 250px;
+            background: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding: 20px 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo-container h2 {
+            color: #1a73e8;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            color: #1a73e8;
+        }
+
+        .nav-item.active {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border-left: 3px solid #1a73e8;
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .print-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .print-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.3s ease;
+        }
+
+        .print-btn:hover {
+            opacity: 0.9;
+        }
+
+        .pdf-btn {
+            background-color: #dc3545;
+        }
+
+        .csv-btn {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="print-buttons">
+        <button class="print-btn pdf-btn" onclick="exportToPDF()">
+            <i class="fas fa-file-pdf"></i>
+            Export to PDF
+        </button>
+        <button class="print-btn csv-btn" onclick="exportToCSV()">
+            <i class="fas fa-file-csv"></i>
+            Export to CSV
+        </button>
+    </div>
+    <script>
+        // Sample data for waste reduction trends
+        const wasteReductionData = {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'Waste Reduction (kg)',
+                data: [120, 150, 180, 210],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                tension: 0.4
+            }]
+        };
+
+        // Sample data for commonly recycled items
+        const recycledItemsData = {
+            labels: ['Plastic', 'Paper', 'Glass', 'Metal', 'Electronics'],
+            datasets: [{
+                label: 'Amount Recycled (kg)',
+                data: [300, 250, 150, 100, 50],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)', 
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Initialize waste reduction chart
+        const wasteCtx = document.getElementById('wasteReductionChart').getContext('2d');
+        new Chart(wasteCtx, {
+            type: 'line',
+            data: wasteReductionData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Waste Reduction (kg)'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Weekly Waste Reduction Trends'
+                    }
+                }
+            }
+        });
+
+        // Initialize recycled items chart
+        const recycledCtx = document.getElementById('recycledItemsChart').getContext('2d');
+        new Chart(recycledCtx, {
+            type: 'bar',
+            data: recycledItemsData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount Recycled (kg)'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Most Commonly Recycled Items'
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        function exportToPDF() {
+            // PDF export functionality using jsPDF
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(16);
+            doc.text('eBASURA Waste Management Report', 20, 20);
+            
+            // Add timestamp
+            doc.setFontSize(12);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 30);
+
+            // Capture and add charts as images
+            const wasteChart = document.getElementById('wasteReductionChart');
+            const recycledChart = document.getElementById('recycledItemsChart');
+            const redemptionChart = document.getElementById('redemptionChart');
+
+            // Add waste reduction chart
+            doc.text('Waste Reduction Trends', 20, 50);
+            doc.addImage(wasteChart.toDataURL(), 'PNG', 20, 60, 170, 80);
+
+            // Add recycled items chart
+            doc.text('Most Commonly Recycled Items', 20, 160);
+            doc.addImage(recycledChart.toDataURL(), 'PNG', 20, 170, 170, 80);
+
+            // Add new page for redemption chart
+            doc.addPage();
+            doc.text('Reward Redemption Patterns', 20, 20);
+            doc.addImage(redemptionChart.toDataURL(), 'PNG', 20, 30, 170, 80);
+
+            // Save the PDF
+            // Show folder selection dialog
+            const folderPicker = document.createElement('input');
+            folderPicker.type = 'file';
+            folderPicker.webkitdirectory = true;
+            folderPicker.style.display = 'none';
+
+            folderPicker.addEventListener('change', function(e) {
+                const folder = e.target.files[0].path.split('\\').slice(0,-1).join('\\');
+                doc.save(folder + '\\ebasura-report.pdf');
+                document.body.removeChild(folderPicker);
+            });
+
+            document.body.appendChild(folderPicker);
+            folderPicker.click();
+            doc.save('ebasura-report.pdf');
+        }
+
+        function exportToCSV() {
+            // CSV export functionality
+            const csvData = [];
+            
+            // Add headers
+            csvData.push(['Date', 'Waste Type', 'Amount (kg)', 'Points Earned']);
+            
+            // Add sample data (this would normally come from your database)
+            csvData.push(['2024-01-01', 'Plastic', '5.2', '52']);
+            csvData.push(['2024-01-01', 'Paper', '3.1', '31']);
+            csvData.push(['2024-01-02', 'Metal', '2.8', '56']);
+            csvData.push(['2024-01-02', 'Glass', '4.3', '43']);
+            
+            // Convert array to CSV string
+            const csvString = csvData.map(row => row.join(',')).join('\n');
+            
+            // Create blob and download link
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            // Set up download
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'ebasura-report.csv');
+            link.style.visibility = 'hidden';
+            
+            // Add to document, click and remove
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+    <div class="sidebar">
+        <div class="logo-container">
+            <h2>eBASURA</h2>
+        </div>
+        <nav>
+            <a href="eBASURA-dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="reward.html" class="nav-item">
+                <i class="fas fa-gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="fas fa-chart-bar"></i>
+                <span>Reports</span>
+            </a>
+            <a href="monitor.html" class="nav-item">
+                <i class="fas fa-desktop"></i>
+                <span>Monitor</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="reports-container">
+        <div class="report-section">
+            <div class="report-title">Waste Reduction Trends</div>
+            <div class="chart-container">
+                <canvas id="wasteReductionChart"></canvas>
+            </div>
+        </div>
+
+        <div class="report-section">
+            <div class="report-title">Most Commonly Recycled Items</div>
+            <div class="chart-container">
+                <canvas id="recycledItemsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="report-section">
+            <div class="report-title">Reward Redemption Patterns</div>
+            <div class="chart-container">
+                <canvas id="redemptionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Waste Reduction Trends Chart
+        const wasteReductionCtx = document.getElementById('wasteReductionChart').getContext('2d');
+        new Chart(wasteReductionCtx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Total Waste (kg)',
+                    data: [120, 110, 95, 85, 75, 65],
+                    borderColor: '#1a73e8',
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Most Recycled Items Chart
+        const recycledItemsCtx = document.getElementById('recycledItemsChart').getContext('2d');
+        new Chart(recycledItemsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Plastic Wrappers', 'Paper Waste', 'Glass bottles', 'Plastic bottles', 'Organic Waste'],
+                datasets: [{
+                    label: 'Amount Recycled (kg)',
+                    data: [45, 35, 30, 25, 20],
+                    backgroundColor: '#34a853'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Reward Redemption Chart
+        const redemptionCtx = document.getElementById('redemptionChart').getContext('2d');
+        new Chart(redemptionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['WiFi Vouchers', 'Food Vouchers', 'School Supplies', 'Other Rewards'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: ['#1a73e8', '#34a853', '#fbbc05', '#ea4335']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+</body>
+</html>
